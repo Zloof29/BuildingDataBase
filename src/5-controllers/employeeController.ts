@@ -5,16 +5,38 @@ class EmployeeController {
   public readonly router = express.Router();
 
   public constructor() {
-    this.router.get("/api/employees", this.getAllEmployyes);
+    this.router.get("/api/employees", this.getAllEmployees);
+    this.router.get("/api/employee/:id", this.getEmployeeById);
+    this.router.post("/api/employee/", this.newEmployee);
   }
 
-  private async getAllEmployyes(
+  private async getAllEmployees(
     request: Request,
     respones: Response,
     next: NextFunction
   ) {
     const employee = await employeesService.getAllEmployees();
     respones.json(employee);
+  }
+
+  private async getEmployeeById(
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) {
+    const id = request.params.id;
+    const employeeById = await employeesService.getEmployeeById(+id);
+    response.json(employeeById);
+  }
+
+  private async newEmployee(
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) {
+    const employee = request.body;
+    const newEmployee = await employeesService.addEmployee(employee);
+    response.json(newEmployee);
   }
 }
 
