@@ -5,6 +5,7 @@ import { employeeController } from "./5-controllers/employeeController";
 
 const server = express();
 
+server.use(express.json());
 server.use("/", productController.router);
 server.use("/", employeeController.router);
 
