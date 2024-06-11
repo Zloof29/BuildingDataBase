@@ -5,9 +5,9 @@ class EmployeeController {
   public readonly router = express.Router();
 
   public constructor() {
-    this.router.get("/api/employees", this.getAllEmployees);
-    this.router.get("/api/employee/:id", this.getEmployeeById);
-    this.router.post("/api/employee/", this.newEmployee);
+    this.router.get("/employees", this.getAllEmployees);
+    this.router.get("/employee/:id", this.getEmployeeById);
+    this.router.post("/employee/", this.newEmployee);
   }
 
   private async getAllEmployees(
