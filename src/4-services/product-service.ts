@@ -44,6 +44,33 @@ class ProductService {
     // return
     return product;
   }
+
+  // update product
+  public async updateProduct(product: ProductModel) {
+    // sql:
+    const sql =
+      "UPDATE products SET name = ?, price = ?, quantity = ? WHERE id = ?";
+
+    // execute
+    const info: OkPacketParams = await dal.execute(sql, [
+      product.name,
+      product.price,
+      product.quantity,
+      product.id,
+    ]);
+
+    // return
+    return product;
+  }
+
+  // delete product:
+  public async deleteProduct(id: number) {
+    // sql:
+    const sql = "DELETE FROM products WHERE id = ?";
+
+    // execute:
+    const info: OkPacketParams = await dal.execute(sql, [id]);
+  }
 }
 
 export const productService = new ProductService();

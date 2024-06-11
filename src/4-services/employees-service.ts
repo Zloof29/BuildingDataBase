@@ -1,5 +1,5 @@
 import { dal } from "../2-utils/dal";
-import { EmployeesModel } from "../3-models/employees";
+import { EmployeesModel } from "../3-models/employees-model";
 
 // employees servise - any logic  regarding employees
 class EmployeesService {
