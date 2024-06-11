@@ -4,15 +4,11 @@ export class ProductModel {
   public price: number;
   public quantity: number;
 
-  public constructor(
-    id: number,
-    name: string,
-    price: number,
-    quantity: number
-  ) {
-    this.id = id;
-    this.name = name;
-    this.price = price;
-    this.quantity = quantity;
+  // copy constructor
+  public constructor(product: ProductModel) {
+    this.id = product.id;
+    this.name = product.name;
+    this.price = product.price;
+    this.quantity = product.quantity;
   }
 }

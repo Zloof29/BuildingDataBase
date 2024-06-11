@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
-import { employeesService } from "../4-services/employees";
+import { employeesService } from "../4-services/employees-service";
+import { EmployeesModel } from "../3-models/employees-model";
 
 class EmployeeController {
   public readonly router = express.Router();
@@ -24,8 +25,8 @@ class EmployeeController {
     response: Response,
     next: NextFunction
   ) {
-    const id = request.params.id;
-    const employeeById = await employeesService.getEmployeeById(+id);
+    const id = +request.params.id;
+    const employeeById = await employeesService.getEmployeeById(id);
     response.json(employeeById);
   }
 
@@ -34,7 +35,7 @@ class EmployeeController {
     response: Response,
     next: NextFunction
   ) {
-    const employee = request.body;
+    const employee = new EmployeesModel(request.body);
     const newEmployee = await employeesService.addEmployee(employee);
     response.json(newEmployee);
   }
