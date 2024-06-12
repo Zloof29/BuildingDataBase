@@ -23,8 +23,12 @@ class ProductController {
     respones: Response,
     next: NextFunction
   ) {
-    const products = await productService.getAllProducts();
-    respones.json(products);
+    try {
+      const products = await productService.getAllProducts();
+      respones.json(products);
+    } catch (error: any) {
+      next(error); //go to catchAll middleware
+    }
   }
 
   // get product by id:
@@ -33,9 +37,13 @@ class ProductController {
     respones: Response,
     next: NextFunction
   ) {
-    const id = +request.params.id;
-    const product = await productService.getProductById(id);
-    respones.json(product);
+    try {
+      const id = +request.params.id;
+      const product = await productService.getProductById(id);
+      respones.json(product);
+    } catch (error: any) {
+      next(error);
+    }
   }
 
   // add product
@@ -44,9 +52,13 @@ class ProductController {
     respones: Response,
     next: NextFunction
   ) {
-    const product = new ProductModel(request.body);
-    const addedProduct = await productService.addProduct(product);
-    respones.status(StatusCode.Created).json(addedProduct);
+    try {
+      const product = new ProductModel(request.body);
+      const addedProduct = await productService.addProduct(product);
+      respones.status(StatusCode.Created).json(addedProduct);
+    } catch (error: any) {
+      next(error);
+    }
   }
 
   // update product:
@@ -55,11 +67,15 @@ class ProductController {
     respones: Response,
     next: NextFunction
   ) {
-    const id = +request.params.id;
-    request.body.id = id;
-    const product = new ProductModel(request.body);
-    const updatedProduct = await productService.updateProduct(product);
-    respones.json(updatedProduct);
+    try {
+      const id = +request.params.id;
+      request.body.id = id;
+      const product = new ProductModel(request.body);
+      const updatedProduct = await productService.updateProduct(product);
+      respones.json(updatedProduct);
+    } catch (error: any) {
+      next(error);
+    }
   }
   // delete product:
   private async deleteProduct(
@@ -67,9 +83,13 @@ class ProductController {
     respones: Response,
     next: NextFunction
   ) {
-    const id = +request.params.id;
-    await productService.deleteProduct(id);
-    respones.sendStatus(StatusCode.NoContent);
+    try {
+      const id = +request.params.id;
+      await productService.deleteProduct(id);
+      respones.sendStatus(StatusCode.NoContent);
+    } catch (error: any) {
+      next(error);
+    }
   }
 }
 

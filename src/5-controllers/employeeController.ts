@@ -16,8 +16,12 @@ class EmployeeController {
     respones: Response,
     next: NextFunction
   ) {
-    const employee = await employeesService.getAllEmployees();
-    respones.json(employee);
+    try {
+      const employee = await employeesService.getAllEmployees();
+      respones.json(employee);
+    } catch (error: any) {
+      next(error);
+    }
   }
 
   private async getEmployeeById(
@@ -25,9 +29,13 @@ class EmployeeController {
     response: Response,
     next: NextFunction
   ) {
-    const id = +request.params.id;
-    const employeeById = await employeesService.getEmployeeById(id);
-    response.json(employeeById);
+    try {
+      const id = +request.params.id;
+      const employeeById = await employeesService.getEmployeeById(id);
+      response.json(employeeById);
+    } catch (error: any) {
+      next(error);
+    }
   }
 
   private async newEmployee(
@@ -35,9 +43,13 @@ class EmployeeController {
     response: Response,
     next: NextFunction
   ) {
-    const employee = new EmployeesModel(request.body);
-    const newEmployee = await employeesService.addEmployee(employee);
-    response.json(newEmployee);
+    try {
+      const employee = new EmployeesModel(request.body);
+      const newEmployee = await employeesService.addEmployee(employee);
+      response.json(newEmployee);
+    } catch (error: any) {
+      next(error);
+    }
   }
 }
 
