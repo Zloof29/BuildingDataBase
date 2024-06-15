@@ -11,10 +11,10 @@ class ProductController {
   //   register routes:
   public constructor() {
     this.router.get("/products", this.getAllProducts);
-    this.router.get("/products/:id", this.getProductById);
+    this.router.get("/products/:id([0-9]+)", this.getProductById); //same as (\\d+)
     this.router.post("/products", this.addProduct);
-    this.router.put("/products/:id", this.updateProduct);
-    this.router.delete("/products/:id", this.deleteProduct);
+    this.router.put("/products/:id([0-9]+)", this.updateProduct);
+    this.router.delete("/products/:id([0-9]+)", this.deleteProduct);
   }
 
   //   get all products:
