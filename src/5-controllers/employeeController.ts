@@ -13,13 +13,13 @@ class EmployeeController {
 
   private async getAllEmployees(
     request: Request,
-    respones: Response,
+    response: Response,
     next: NextFunction
   ) {
     try {
-      const employee = await employeesService.getAllEmployees();
-      respones.json(employee);
-    } catch (error: any) {
+      const employees = await employeesService.getAllEmployees();
+      response.json(employees);
+    } catch (error) {
       next(error);
     }
   }

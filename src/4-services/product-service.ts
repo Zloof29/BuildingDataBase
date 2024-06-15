@@ -1,6 +1,7 @@
 import { OkPacketParams, ResultSetHeader } from "mysql2";
 import { dal } from "../2-utils/dal";
 import { ProductModel } from "../3-models/product-model";
+import { ResourceNotFoundError } from "../3-models/client-error";
 
 // Product service - any logic regarding products:
 class ProductService {
@@ -22,12 +23,19 @@ class ProductService {
     const products = await dal.execute(sql, [id]);
     // extract the one and only product:
     const product = products[0];
+
+    // if no product found:
+    if (!product) throw new ResourceNotFoundError(id);
+
     // return:
     return product;
   }
 
   // add product:
   public async addProduct(product: ProductModel) {
+    // valutation:
+    product.validate();
+
     // sql:
     const sql = "INSERT INTO products(name, price, quantity) VALUES (?, ?, ?)";
 
@@ -47,6 +55,9 @@ class ProductService {
 
   // update product
   public async updateProduct(product: ProductModel) {
+    // valutation:
+    product.validate();
+
     // sql:
     const sql =
       "UPDATE products SET name = ?, price = ?, quantity = ? WHERE id = ?";
@@ -59,6 +70,9 @@ class ProductService {
       product.id,
     ]);
 
+    // if product not found:
+    if (info.affectedRows === 0) throw new ResourceNotFoundError(product.id);
+
     // return
     return product;
   }
@@ -70,6 +84,9 @@ class ProductService {
 
     // execute:
     const info: OkPacketParams = await dal.execute(sql, [id]);
+
+    // if product not found:
+    if (info.affectedRows === 0) throw new ResourceNotFoundError(id);
   }
 }
 
