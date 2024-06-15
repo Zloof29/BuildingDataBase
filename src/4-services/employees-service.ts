@@ -19,11 +19,14 @@ class EmployeesService {
     const sql =
       "SELECT id, firstName, lastName, title, titleOfCourtesy, birthDate, hireDate FROM employees WHERE id = ? ";
     const employeeById = await dal.execute(sql, [id]);
+
+    if (!employeeById) throw new ResourceNotFoundError(id);
+
     return employeeById;
   }
 
   public async addEmployee(employee: EmployeesModel) {
-    employee.employeesValidate();
+    employee.validateInsert();
 
     const sql =
       "INSERT INTO employees (firstname, lastname, title, titleOfCourtesy, birthDate, hireDate) VALUES (?, ?, ?, ?, ?, ?)";
@@ -40,7 +43,7 @@ class EmployeesService {
   }
 
   public async updateEmployee(employee: EmployeesModel) {
-    employee.employeesValidate();
+    employee.validateUpdate();
 
     const sql =
       "UPDATE employees set firstName = ?, lastName = ?, title = ?, titleOfCourtesy = ?, birthDate = ?, hireDate = ? WHERE id = ?";
