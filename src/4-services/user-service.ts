@@ -7,8 +7,8 @@ import { cyber } from "../2-utils/cyber";
 class UserService {
   public async register(user: UserModel) {
     // validation...
-    // user.validate();
-  
+    user.insertUserValidate();
+
     //  sql:
     const sql = "INSERT INTO users VALUES(default, ?, ?, ?, ?, ?)";
 

@@ -19,8 +19,13 @@ server.use(logsMiddleware.logRequest);
 server.use(securityMiddleware.preventXssAttack);
 
 // register routes
-server.use("/api", productController.router);
-server.use("/api", employeeController.router, userController.router);
+// server.use("/api", productController.router);
+server.use(
+  "/api",
+  employeeController.router,
+  userController.router,
+  productController.router
+);
 
 // register route not found middleware:
 server.use("*", errorsMiddleware.routeNotFound);
