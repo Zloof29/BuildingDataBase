@@ -8,7 +8,7 @@ export class UserModel {
   public lastName: string;
   public email: string;
   public password: string;
-  public role: Role;
+  public roleId: Role;
 
   public constructor(user: UserModel) {
     this.id = user.id;
@@ -16,7 +16,7 @@ export class UserModel {
     this.lastName = user.lastName;
     this.email = user.email;
     this.password = user.password;
-    this.role = user.role;
+    this.roleId = user.roleId;
   }
 
   private static insertUserValidate = Joi.object({
