@@ -2,6 +2,8 @@ import express, { Request, Response, NextFunction } from "express";
 import { productService } from "../4-services/product-service";
 import { ProductModel } from "../3-models/product-model";
 import { StatusCode } from "../3-models/enums";
+import { securityMiddleware } from "../6-middleware/security-middleware";
+import { fileSaver } from "uploaded-file-saver";
 
 // product controller listening to product requests:
 class ProductController {
@@ -12,9 +14,22 @@ class ProductController {
   public constructor() {
     this.router.get("/products", this.getAllProducts);
     this.router.get("/products/:id([0-9]+)", this.getProductById); //same as (\\d+)
-    this.router.post("/products", this.addProduct);
-    this.router.put("/products/:id([0-9]+)", this.updateProduct);
-    this.router.delete("/products/:id([0-9]+)", this.deleteProduct);
+    this.router.post(
+      "/products",
+      securityMiddleware.validateLogin,
+      this.addProduct
+    );
+    this.router.put(
+      "/products/:id([0-9]+)",
+      securityMiddleware.validateLogin,
+      this.updateProduct
+    );
+    this.router.delete(
+      "/products/:id([0-9]+)",
+      securityMiddleware.validateAdmin,
+      this.deleteProduct
+    );
+    this.router.get("/products/images/:imageName", this.getProductImage);
   }
 
   //   get all products:
@@ -53,6 +68,7 @@ class ProductController {
     next: NextFunction
   ) {
     try {
+      request.body.image = request.files?.image;
       const product = new ProductModel(request.body);
       const addedProduct = await productService.addProduct(product);
       respones.status(StatusCode.Created).json(addedProduct);
@@ -87,6 +103,21 @@ class ProductController {
       const id = +request.params.id;
       await productService.deleteProduct(id);
       respones.sendStatus(StatusCode.NoContent);
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
+  // get product image:
+  private async getProductImage(
+    request: Request,
+    respones: Response,
+    next: NextFunction
+  ) {
+    try {
+      const imageName = request.params.imageName;
+      const imagePath = fileSaver.getFilePath(imageName, true);
+      respones.sendFile(imagePath);
     } catch (error: any) {
       next(error);
     }

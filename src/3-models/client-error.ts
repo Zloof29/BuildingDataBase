@@ -35,3 +35,9 @@ export class ValitationError extends ClientError {
     super(StatusCode.BadRequest, message);
   }
 }
+
+export class UnauthorizedError extends ClientError {
+  public constructor(message: string) {
+    super(StatusCode.Unauthorizeed, message);
+  }
+}

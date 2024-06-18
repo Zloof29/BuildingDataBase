@@ -2,13 +2,15 @@ import { OkPacketParams, ResultSetHeader } from "mysql2";
 import { dal } from "../2-utils/dal";
 import { ProductModel } from "../3-models/product-model";
 import { ResourceNotFoundError } from "../3-models/client-error";
+import { fileSaver } from "uploaded-file-saver";
 
 // Product service - any logic regarding products:
 class ProductService {
   // get all products:
   public async getAllProducts() {
     // create sql:
-    const sql = "SELECT * FROM products";
+    const sql =
+      "SELECT *, concat('http://localhost:4000/api/products/images/', imageName) as imageUrl FROM products";
     // execute
     const products = await dal.execute(sql);
     // return
@@ -18,7 +20,8 @@ class ProductService {
   // get on product:
   public async getProductById(id: number) {
     // sql:
-    const sql = "SELECT * FROM products WHERE id = ?";
+    const sql =
+      "SELECT *, concat('http://localhost:4000/api/products/images/', imageName) as imageUrl FROM products WHERE id = ?";
     // execute:
     const products = await dal.execute(sql, [id]);
     // extract the one and only product:
@@ -36,18 +39,23 @@ class ProductService {
     // valutation:
     product.validate();
 
+    // save image to disk:
+    const imageName = await fileSaver.add(product.image);
+
     // sql:
-    const sql = "INSERT INTO products(name, price, quantity) VALUES (?, ?, ?)";
+    const sql =
+      "INSERT INTO products(name, price, quantity, imageName) VALUES (?, ?, ?, ?)";
 
     // execute
     const info: OkPacketParams = await dal.execute(sql, [
       product.name,
       product.price,
       product.quantity,
+      imageName,
     ]);
 
-    // set new id:
-    product.id = info.insertId;
+    // get back the db product:
+    product = await this.getProductById(info.insertId);
 
     // return
     return product;
